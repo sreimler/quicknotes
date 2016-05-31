@@ -18,16 +18,33 @@ package com.sreimler.quicknotes.ui;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.sreimler.quicknotes.R;
+import com.sreimler.quicknotes.adapters.NoteViewHolder;
+import com.sreimler.quicknotes.data.Note;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Displays a list of notes.
  */
 public class NoteListFragment extends Fragment {
+
+    public static final String NOTES_CHILD = "notes";
+
+    private DatabaseReference mReference;
+
+    @BindView(R.id.fragment_note_list__recycler_view)
+    RecyclerView mRecyclerView;
 
     public NoteListFragment() {
     }
@@ -43,6 +60,27 @@ public class NoteListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_note_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_note_list, container, false);
+        ButterKnife.bind(this, view);
+
+        // Get Firebase db reference
+        mReference = FirebaseDatabase.getInstance().getReference();
+
+        LinearLayoutManager manager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(manager);
+
+        FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<Note, NoteViewHolder>(
+                Note.class,
+                R.layout.item_note,
+                NoteViewHolder.class,
+                mReference.child(NOTES_CHILD)) {
+            @Override
+            protected void populateViewHolder(NoteViewHolder viewHolder, Note note, int position) {
+                viewHolder.bind(note);
+            }
+        };
+        mRecyclerView.setAdapter(adapter);
+
+        return view;
     }
 }
