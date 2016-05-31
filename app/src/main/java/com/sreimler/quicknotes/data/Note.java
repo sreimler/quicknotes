@@ -16,9 +16,7 @@
 
 package com.sreimler.quicknotes.data;
 
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.IgnoreExtraProperties;
-import com.google.firebase.database.ServerValue;
 
 /**
  * Data object for a single note.
