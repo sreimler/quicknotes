@@ -16,9 +16,12 @@
 
 package com.sreimler.quicknotes.ui;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -28,9 +31,11 @@ import android.view.View;
 import com.sreimler.quicknotes.R;
 
 /**
- * Coordinates the views of the app.
+ * Coordinates the main view of the app.
  */
 public class MainActivity extends AppCompatActivity {
+
+    private FragmentManager mFragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,22 +44,22 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        mFragmentManager = getFragmentManager();
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        if (fab != null) {
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(MainActivity.this, EditNoteActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }
 
         if (savedInstanceState == null) {
             // On the first launch of the activity, add a note list fragment
-            getFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.container, NoteListFragment.newInstance())
-                    .addToBackStack(null)
-                    .commit();
+            addFragment(NoteListFragment.newInstance());
         }
     }
 
@@ -78,5 +83,22 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void addFragment(Fragment fragment) {
+        FragmentTransaction transaction = mFragmentManager.beginTransaction();
+
+        if (mFragmentManager.getBackStackEntryCount() == 0) {
+            // The first fragment should be added to the container
+            // and not be placed in the back stack
+            transaction.add(R.id.container, fragment);
+        } else {
+            // Consecutive fragments should replace the initial fragment
+            // and be added to the back stack to allow proper navigation
+            transaction.replace(R.id.container, fragment)
+                    .addToBackStack(null);
+        }
+
+        transaction.commit();
     }
 }

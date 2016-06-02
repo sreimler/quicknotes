@@ -31,10 +31,10 @@ import butterknife.ButterKnife;
  */
 public class NoteViewHolder extends RecyclerView.ViewHolder {
 
-    @BindView(R.id.item_note__txtv_title)
+    @BindView(R.id.note_item__txtv_title)
     TextView mTitleView;
 
-    @BindView(R.id.item_note__txtv_text)
+    @BindView(R.id.note_item__txtv_text)
     TextView mTextView;
 
     public NoteViewHolder(View v) {

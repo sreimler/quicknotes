@@ -39,8 +39,6 @@ import butterknife.ButterKnife;
  */
 public class NoteListFragment extends Fragment {
 
-    public static final String NOTES_CHILD = "notes";
-
     private DatabaseReference mReference;
 
     @BindView(R.id.fragment_note_list__recycler_view)
@@ -51,6 +49,7 @@ public class NoteListFragment extends Fragment {
 
     /**
      * Creates an instance of {@link NoteListFragment}.
+     *
      * @return The fragment instance
      */
     public static NoteListFragment newInstance() {
@@ -73,7 +72,7 @@ public class NoteListFragment extends Fragment {
                 Note.class,
                 R.layout.item_note,
                 NoteViewHolder.class,
-                mReference.child(NOTES_CHILD)) {
+                mReference.child(Note.NOTES_CHILD)) {
             @Override
             protected void populateViewHolder(NoteViewHolder viewHolder, Note note, int position) {
                 viewHolder.bind(note);
