@@ -24,6 +24,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sreimler.quicknotes.R;
@@ -32,6 +34,7 @@ import com.sreimler.quicknotes.data.Note;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 /**
  * Provides a form for note creation and editing.
@@ -93,9 +96,15 @@ public class EditNoteFragment extends Fragment {
 
         // Store note in Firebase
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        mDatabaseReference.child(Note.NOTES_CHILD).push().setValue(note);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        // Inform the hosting activity
-        mListener.noteSaved();
+        if (user != null) {
+            mDatabaseReference.child(Note.USER_CHILD).child(user.getUid()).child(Note.NOTES_CHILD).push().setValue(note);
+
+            // Inform the hosting activity
+            mListener.noteSaved();
+        } else {
+            Timber.e("User not authorized");
+        }
     }
 }

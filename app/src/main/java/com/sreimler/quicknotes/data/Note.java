@@ -24,6 +24,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class Note {
 
+    public static final String USER_CHILD = "users";
     public static final String NOTES_CHILD = "notes";
 
     private String title;

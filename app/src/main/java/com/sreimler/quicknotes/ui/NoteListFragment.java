@@ -25,6 +25,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sreimler.quicknotes.R;
@@ -33,6 +35,7 @@ import com.sreimler.quicknotes.data.Note;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 /**
  * Displays a list of notes.
@@ -71,17 +74,23 @@ public class NoteListFragment extends Fragment {
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(manager);
 
-        mAdapter = new FirebaseRecyclerAdapter<Note, NoteViewHolder>(
-                Note.class,
-                R.layout.item_note,
-                NoteViewHolder.class,
-                mReference.child(Note.NOTES_CHILD)) {
-            @Override
-            protected void populateViewHolder(NoteViewHolder viewHolder, Note note, int position) {
-                viewHolder.bind(note);
-            }
-        };
-        mRecyclerView.setAdapter(mAdapter);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            mAdapter = new FirebaseRecyclerAdapter<Note, NoteViewHolder>(
+                    Note.class,
+                    R.layout.item_note,
+                    NoteViewHolder.class,
+                    mReference.child(Note.USER_CHILD).child(user.getUid()).child(Note.NOTES_CHILD)) {
+                @Override
+                protected void populateViewHolder(NoteViewHolder viewHolder, Note note, int position) {
+                    viewHolder.bind(note);
+                }
+            };
+            mRecyclerView.setAdapter(mAdapter);
+        } else {
+            Timber.e("User not authorized");
+        }
+
 
         return view;
     }
