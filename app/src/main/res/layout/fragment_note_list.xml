@@ -23,7 +23,7 @@
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingTop="@dimen/activity_vertical_margin"
                 tools:context=".ui.NoteListFragment"
-                tools:showIn="@layout/activity_main">
+                tools:showIn="@layout/activity_note_list">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/fragment_note_list__recycler_view"

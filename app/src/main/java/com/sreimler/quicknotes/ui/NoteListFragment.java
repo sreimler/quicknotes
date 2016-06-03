@@ -16,8 +16,8 @@
 
 package com.sreimler.quicknotes.ui;
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -39,7 +39,10 @@ import butterknife.ButterKnife;
  */
 public class NoteListFragment extends Fragment {
 
+    public static final String TAG = "note_list_fragment";
+
     private DatabaseReference mReference;
+    private FirebaseRecyclerAdapter mAdapter;
 
     @BindView(R.id.fragment_note_list__recycler_view)
     RecyclerView mRecyclerView;
@@ -68,7 +71,7 @@ public class NoteListFragment extends Fragment {
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(manager);
 
-        FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<Note, NoteViewHolder>(
+        mAdapter = new FirebaseRecyclerAdapter<Note, NoteViewHolder>(
                 Note.class,
                 R.layout.item_note,
                 NoteViewHolder.class,
@@ -78,8 +81,14 @@ public class NoteListFragment extends Fragment {
                 viewHolder.bind(note);
             }
         };
-        mRecyclerView.setAdapter(adapter);
+        mRecyclerView.setAdapter(mAdapter);
 
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mAdapter.cleanup();
     }
 }

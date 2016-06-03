@@ -16,51 +16,41 @@
 
 package com.sreimler.quicknotes.ui;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.sreimler.quicknotes.R;
+
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Coordinates the main view of the app.
  */
-public class MainActivity extends AppCompatActivity {
+public class NoteListActivity extends AppCompatActivity {
+
+    private static final int RC_SIGN_IN = 9001;
 
     private FragmentManager mFragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_note_list);
+        ButterKnife.bind(this);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mFragmentManager = getSupportFragmentManager();
 
-        mFragmentManager = getFragmentManager();
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        if (fab != null) {
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(MainActivity.this, EditNoteActivity.class);
-                    startActivity(intent);
-                }
-            });
-        }
-
-        if (savedInstanceState == null) {
-            // On the first launch of the activity, add a note list fragment
-            addFragment(NoteListFragment.newInstance());
-        }
+        addFragment(NoteListFragment.newInstance(), NoteListFragment.TAG);
     }
 
     @Override
@@ -85,17 +75,23 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void addFragment(Fragment fragment) {
+    @OnClick(R.id.fab)
+    void editNote() {
+        Intent intent = new Intent(this, EditNoteActivity.class);
+        startActivity(intent);
+    }
+
+    private void addFragment(Fragment fragment, String tag) {
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
 
         if (mFragmentManager.getBackStackEntryCount() == 0) {
             // The first fragment should be added to the container
             // and not be placed in the back stack
-            transaction.add(R.id.container, fragment);
+            transaction.add(R.id.container, fragment, tag);
         } else {
             // Consecutive fragments should replace the initial fragment
             // and be added to the back stack to allow proper navigation
-            transaction.replace(R.id.container, fragment)
+            transaction.replace(R.id.container, fragment, tag)
                     .addToBackStack(null);
         }
 
