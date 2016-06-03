@@ -55,8 +55,7 @@ public class AuthorizationActivity extends AppCompatActivity {
             // User is signed out, show the Firebase signup/login activity
             startActivity(AuthUI.getInstance().createSignInIntentBuilder()
                     .setProviders(AuthUI.EMAIL_PROVIDER,
-                            AuthUI.GOOGLE_PROVIDER,
-                            AuthUI.FACEBOOK_PROVIDER)
+                            AuthUI.GOOGLE_PROVIDER)
                     .build());
         } else {
             Timber.d("user is signed in with id %s", user.getUid());
