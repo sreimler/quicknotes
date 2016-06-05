@@ -36,6 +36,7 @@ import com.sreimler.quicknotes.R;
 import com.sreimler.quicknotes.data.Note;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import timber.log.Timber;
 
 /**
@@ -46,7 +47,7 @@ import timber.log.Timber;
  * create an instance of this fragment.
  */
 public class NoteDetailFragment extends Fragment {
-    private static final String ARG_NOTE_ID = "note_id";
+    public static final String ARG_NOTE_ID = "note_id";
 
     private Note mNote;
 
@@ -80,12 +81,21 @@ public class NoteDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_note_detail, container, false);
+
+        ButterKnife.bind(this, view);
+
         if (getArguments() != null) {
             String noteId = getArguments().getString(ARG_NOTE_ID);
 
             if (noteId == null) {
-                Timber.e("no note id supplied");
-                return;
+                throw new IllegalArgumentException("Must pass ARG_NOTE_ID");
             }
 
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
@@ -111,13 +121,8 @@ public class NoteDetailFragment extends Fragment {
                 Timber.e("User not authorized");
             }
         }
-    }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_note_detail, container, false);
+        return view;
     }
 
     @Override

@@ -27,14 +27,24 @@ import com.sreimler.quicknotes.R;
  */
 public class NoteDetailActivity extends AppCompatActivity implements NoteDetailFragment.OnFragmentInteractionListener {
 
+    public static final String EXTRA_NOTE_ID = "note_id";
+
+    private String mNoteId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_detail);
 
+        // Get post key from intent
+        mNoteId = getIntent().getStringExtra(EXTRA_NOTE_ID);
+        if (mNoteId == null) {
+            throw new IllegalArgumentException("Must pass EXTRA_NOTE_ID");
+        }
+
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(android.R.id.content, NoteDetailFragment.newInstance("-KJNKfoM8Me_hDig8ZEF"))
+                .add(android.R.id.content, NoteDetailFragment.newInstance(mNoteId))
                 .commit();
     }
 

@@ -16,6 +16,7 @@
 
 package com.sreimler.quicknotes.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -83,6 +84,20 @@ public class NoteListFragment extends Fragment {
                     mReference.child(Note.USER_CHILD).child(user.getUid()).child(Note.NOTES_CHILD)) {
                 @Override
                 protected void populateViewHolder(NoteViewHolder viewHolder, Note note, int position) {
+                    final DatabaseReference postRef = getRef(position);
+
+                    // Set click listener for the whole post view
+                    final String noteId = postRef.getKey();
+                    viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // Launch NoteDetailActivity
+                            Intent intent = new Intent(getActivity(), NoteDetailActivity.class);
+                            intent.putExtra(NoteDetailActivity.EXTRA_NOTE_ID, noteId);
+                            startActivity(intent);
+                        }
+                    });
+
                     viewHolder.bind(note);
                 }
             };
