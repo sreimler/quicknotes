@@ -24,7 +24,7 @@ import com.sreimler.quicknotes.R;
 /**
  * Handles the creation and editing of notes.
  */
-public class EditNoteActivity extends AppCompatActivity implements EditNoteFragment.OnNoteSavedListener {
+public class EditNoteActivity extends AppCompatActivity implements EditNoteFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

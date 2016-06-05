@@ -38,6 +38,10 @@ import timber.log.Timber;
 
 /**
  * Provides a form for note creation and editing.
+ * Activities that contain this fragment must implement the
+ * {@link OnFragmentInteractionListener} interface.
+ * Use the {@link EditNoteFragment#newInstance} factory method to
+ * create an instance of this fragment.
  */
 public class EditNoteFragment extends Fragment {
 
@@ -47,23 +51,29 @@ public class EditNoteFragment extends Fragment {
     @BindView(R.id.edit_note__etxt_note_text)
     EditText mTextTxt;
 
-    private OnNoteSavedListener mListener;
+    private OnFragmentInteractionListener mListener;
     private DatabaseReference mDatabaseReference;
 
     public EditNoteFragment() {
+        // Required empty public constructor
     }
 
     /**
      * Creates an instance of {@link EditNoteFragment}.
      *
-     * @return The fragment instance
+     * @return A new fragment instance.
      */
     public static EditNoteFragment newInstance() {
         return new EditNoteFragment();
     }
 
-    // Container activity must implement this interface
-    public interface OnNoteSavedListener {
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     */
+    public interface OnFragmentInteractionListener {
         void noteSaved();
     }
 
@@ -81,11 +91,17 @@ public class EditNoteFragment extends Fragment {
 
         // Ensure that the container implements the callback
         try {
-            mListener = (OnNoteSavedListener) context;
+            mListener = (OnFragmentInteractionListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
-                    + " must implement OnNoteSavedListener");
+                    + " must implement OnFragmentInteractionListener");
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 
     @OnClick(R.id.edit_note__btn_save)
