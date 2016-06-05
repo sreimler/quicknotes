@@ -26,6 +26,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.sreimler.quicknotes.R;
 
 import butterknife.ButterKnife;
@@ -62,17 +63,17 @@ public class NoteListActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                return true;
+            case R.id.action_sign_out:
+                // Sign the user out and redirect to the AuthorizationActivity
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(NoteListActivity.this, AuthorizationActivity.class));
+                finish();
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @OnClick(R.id.fab)
