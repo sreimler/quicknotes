@@ -91,7 +91,6 @@ public class NoteListFragment extends Fragment {
             Timber.e("User not authorized");
         }
 
-
         return view;
     }
 
