@@ -21,7 +21,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.sreimler.quicknotes.R;
-import com.sreimler.quicknotes.data.Note;
+import com.sreimler.quicknotes.models.Note;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,8 +34,8 @@ public class NoteViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.note_item__txtv_title)
     TextView mTitleView;
 
-    @BindView(R.id.note_item__txtv_text)
-    TextView mTextView;
+    @BindView(R.id.note_item__txtv_description)
+    TextView mDescriptionView;
 
     public NoteViewHolder(View v) {
         super(v);
@@ -44,6 +44,6 @@ public class NoteViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(Note note) {
         mTitleView.setText(note.getTitle());
-        mTextView.setText(note.getText());
+        mDescriptionView.setText(note.getDescription());
     }
 }

@@ -24,13 +24,13 @@
               android:paddingLeft="@dimen/activity_horizontal_margin"
               android:paddingRight="@dimen/activity_horizontal_margin"
               android:paddingTop="@dimen/activity_vertical_margin"
-              tools:context=".ui.EditNoteFragment">
+              tools:context=".fragments.EditNoteFragment">
 
     <Button
         android:id="@+id/edit_note__btn_save"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/save_note_button_text"
+        android:description="@string/save_note_button_text"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"/>
 
     <EditText
@@ -43,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:inputType="textMultiLine"
-        android:id="@+id/edit_note__etxt_note_text"
+        android:id="@+id/edit_note__etxt_note_description"
         android:hint="@string/hint_etxt_text"
         android:lines="10"
         android:gravity="top"

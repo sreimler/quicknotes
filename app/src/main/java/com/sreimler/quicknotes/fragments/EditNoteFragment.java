@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.sreimler.quicknotes.ui;
+package com.sreimler.quicknotes.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -29,7 +29,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sreimler.quicknotes.R;
-import com.sreimler.quicknotes.data.Note;
+import com.sreimler.quicknotes.models.Note;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,10 +46,10 @@ import timber.log.Timber;
 public class EditNoteFragment extends Fragment {
 
     @BindView(R.id.edit_note__etxt_note_title)
-    EditText mTitleTxt;
+    EditText mTitleEtxt;
 
-    @BindView(R.id.edit_note__etxt_note_text)
-    EditText mTextTxt;
+    @BindView(R.id.edit_note__etxt_note_description)
+    EditText mDescriptionEtxt;
 
     private OnFragmentInteractionListener mListener;
     private DatabaseReference mDatabaseReference;
@@ -106,9 +106,9 @@ public class EditNoteFragment extends Fragment {
 
     @OnClick(R.id.edit_note__btn_save)
     protected void save() {
-        String title = mTitleTxt.getText().toString();
-        String text = mTextTxt.getText().toString();
-        Note note = new Note(title, text);
+        String title = mTitleEtxt.getText().toString();
+        String description = mDescriptionEtxt.getText().toString();
+        Note note = new Note(title, description);
 
         // Store note in Firebase
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.sreimler.quicknotes.ui;
+package com.sreimler.quicknotes.fragments;
 
 import android.content.Context;
 import android.net.Uri;
@@ -33,14 +33,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sreimler.quicknotes.R;
-import com.sreimler.quicknotes.data.Note;
+import com.sreimler.quicknotes.models.Note;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
 /**
- * Displays the a view containing all details of a {@link com.sreimler.quicknotes.data.Note}.
+ * Displays the a view containing all details of a {@link com.sreimler.quicknotes.models.Note}.
  * Activities that contain this fragment must implement the
  * {@link NoteDetailFragment.OnFragmentInteractionListener} interface.
  * Use the {@link NoteDetailFragment#newInstance} factory method to
@@ -57,8 +57,8 @@ public class NoteDetailFragment extends Fragment {
     @BindView(R.id.note_detail__txtv_note_title)
     TextView mTitleView;
 
-    @BindView(R.id.note_detail__txtv_note_text)
-    TextView mTextView;
+    @BindView(R.id.note_detail__txtv_note_description)
+    TextView mDescriptionView;
 
     public NoteDetailFragment() {
         // Required empty public constructor
@@ -109,7 +109,7 @@ public class NoteDetailFragment extends Fragment {
                                 // Get note value
                                 mNote = dataSnapshot.getValue(Note.class);
                                 mTitleView.setText(mNote.getTitle());
-                                mTextView.setText(mNote.getText());
+                                mDescriptionView.setText(mNote.getDescription());
                             }
 
                             @Override

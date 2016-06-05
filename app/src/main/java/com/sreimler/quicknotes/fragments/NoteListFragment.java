@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.sreimler.quicknotes.ui;
+package com.sreimler.quicknotes.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,7 +32,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sreimler.quicknotes.R;
 import com.sreimler.quicknotes.adapters.NoteViewHolder;
-import com.sreimler.quicknotes.data.Note;
+import com.sreimler.quicknotes.models.Note;
+import com.sreimler.quicknotes.activities.NoteDetailActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

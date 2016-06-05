@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.sreimler.quicknotes.ui;
+package com.sreimler.quicknotes.activities;
 
 import android.content.Intent;
 import android.os.Bundle;

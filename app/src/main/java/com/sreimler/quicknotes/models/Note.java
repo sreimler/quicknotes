@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.sreimler.quicknotes.data;
+package com.sreimler.quicknotes.models;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -28,29 +28,29 @@ public class Note {
     public static final String NOTES_CHILD = "notes";
 
     private String title;
-    private String text;
+    private String description;
 
     public Note() {
     }
 
-    public Note(String title, String text) {
+    public Note(String title, String description) {
         this.title = title;
-        this.text = text;
+        this.description = description;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public String getText() {
-        return text;
+    public String getDescription() {
+        return description;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
