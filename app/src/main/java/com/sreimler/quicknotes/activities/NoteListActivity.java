@@ -36,7 +36,7 @@ import butterknife.OnClick;
 /**
  * Coordinates the main view of the app.
  */
-public class NoteListActivity extends AppCompatActivity {
+public class NoteListActivity extends AppCompatActivity implements NoteListFragment.OnFragmentInteractionListener {
 
     private static final int RC_SIGN_IN = 9001;
 
@@ -98,5 +98,12 @@ public class NoteListActivity extends AppCompatActivity {
         }
 
         transaction.commit();
+    }
+
+    @Override
+    public void listItemClicked(String noteId) {
+        Intent intent = new Intent(this, NoteDetailActivity.class);
+        intent.putExtra(NoteDetailActivity.EXTRA_NOTE_ID, noteId);
+        startActivity(intent);
     }
 }

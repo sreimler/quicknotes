@@ -16,7 +16,7 @@
 
 package com.sreimler.quicknotes.fragments;
 
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,7 +33,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.sreimler.quicknotes.R;
 import com.sreimler.quicknotes.adapters.NoteViewHolder;
 import com.sreimler.quicknotes.models.Note;
-import com.sreimler.quicknotes.activities.NoteDetailActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,6 +47,7 @@ public class NoteListFragment extends Fragment {
 
     private DatabaseReference mReference;
     private FirebaseRecyclerAdapter mAdapter;
+    private OnFragmentInteractionListener mListener;
 
     @BindView(R.id.fragment_note_list__recycler_view)
     RecyclerView mRecyclerView;
@@ -92,10 +92,8 @@ public class NoteListFragment extends Fragment {
                     viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            // Launch NoteDetailActivity
-                            Intent intent = new Intent(getActivity(), NoteDetailActivity.class);
-                            intent.putExtra(NoteDetailActivity.EXTRA_NOTE_ID, noteId);
-                            startActivity(intent);
+                            // Notify NoteListActivity about the click
+                            mListener.listItemClicked(noteId);
                         }
                     });
 
@@ -111,8 +109,29 @@ public class NoteListFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         mAdapter.cleanup();
+    }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     */
+    public interface OnFragmentInteractionListener {
+        void listItemClicked(String noteId);
     }
 }
