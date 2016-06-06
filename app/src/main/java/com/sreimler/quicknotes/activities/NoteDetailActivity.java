@@ -19,9 +19,18 @@ package com.sreimler.quicknotes.activities;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.sreimler.quicknotes.R;
 import com.sreimler.quicknotes.fragments.NoteDetailFragment;
+import com.sreimler.quicknotes.models.Note;
+
+import timber.log.Timber;
 
 /**
  * Handles the display of note details.
@@ -47,6 +56,35 @@ public class NoteDetailActivity extends AppCompatActivity implements NoteDetailF
                 .beginTransaction()
                 .add(android.R.id.content, NoteDetailFragment.newInstance(mNoteId))
                 .commit();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_note_detail, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_delete_note:
+                // TODO: Request deletion confirmation
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                if (user != null) {
+                    ref.child(Note.USER_CHILD).child(user.getUid()).child(Note.NOTES_CHILD).child(mNoteId).removeValue();
+                } else {
+                    Timber.e("User not authorized");
+                }
+
+                Timber.i("Note deleted!");
+                finish();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

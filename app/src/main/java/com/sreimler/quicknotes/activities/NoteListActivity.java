@@ -65,8 +65,6 @@ public class NoteListActivity extends AppCompatActivity implements NoteListFragm
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                return true;
             case R.id.action_sign_out:
                 // Sign the user out and redirect to the AuthorizationActivity
                 FirebaseAuth.getInstance().signOut();

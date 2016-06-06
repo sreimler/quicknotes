@@ -30,7 +30,7 @@
         android:id="@+id/edit_note__btn_save"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:description="@string/save_note_button_text"
+        android:text="@string/save_note_button_text"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"/>
 
     <EditText
@@ -44,7 +44,7 @@
         android:layout_height="0dp"
         android:inputType="textMultiLine"
         android:id="@+id/edit_note__etxt_note_description"
-        android:hint="@string/hint_etxt_text"
+        android:hint="@string/hint_etxt_description"
         android:lines="10"
         android:gravity="top"
         android:layout_weight="1"/>
