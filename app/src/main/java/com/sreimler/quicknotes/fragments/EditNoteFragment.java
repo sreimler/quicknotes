@@ -81,16 +81,6 @@ public class EditNoteFragment extends Fragment {
         return fragment;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     */
-    public interface OnFragmentInteractionListener {
-        void noteSaved();
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_edit_note, container, false);
@@ -158,7 +148,9 @@ public class EditNoteFragment extends Fragment {
             if (mNoteId == null) {
                 // Create new note
                 mNote = new Note(title, description);
-                mDatabaseReference.child(Note.USER_CHILD).child(user.getUid()).child(Note.NOTES_CHILD).push().setValue(mNote);
+                DatabaseReference ref = mDatabaseReference.child(Note.USER_CHILD).child(user.getUid()).child(Note.NOTES_CHILD).push();
+                ref.setValue(mNote);
+                mNoteId = ref.getKey();
             } else {
                 // Update the existing note object
                 mNote.setTitle(title);
@@ -167,9 +159,20 @@ public class EditNoteFragment extends Fragment {
             }
 
             // Inform the hosting activity
-            mListener.noteSaved();
+            mListener.noteSaved(mNoteId);
         } else {
             Timber.e("User not authorized");
         }
+    }
+
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     */
+    public interface OnFragmentInteractionListener {
+        void noteSaved(String noteId);
     }
 }

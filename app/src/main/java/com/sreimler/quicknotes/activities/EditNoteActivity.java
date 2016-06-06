@@ -16,6 +16,7 @@
 
 package com.sreimler.quicknotes.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -44,7 +45,14 @@ public class EditNoteActivity extends AppCompatActivity implements EditNoteFragm
     }
 
     @Override
-    public void noteSaved() {
+    public void noteSaved(String noteId) {
+        if (mNoteId == null) {
+            // A new note was created - create an intent to the note detail view
+            Intent intent = new Intent(this, NoteDetailActivity.class);
+            intent.putExtra(NoteDetailActivity.EXTRA_NOTE_ID, noteId);
+            startActivity(intent);
+        }
+
         finish();
     }
 }

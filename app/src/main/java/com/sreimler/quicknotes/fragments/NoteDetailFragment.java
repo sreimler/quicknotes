@@ -50,6 +50,7 @@ public class NoteDetailFragment extends Fragment {
     public static final String ARG_NOTE_ID = "note_id";
 
     private Note mNote;
+    private String mNoteId;
 
     private OnFragmentInteractionListener mListener;
     private DatabaseReference mDatabaseReference;
@@ -92,37 +93,42 @@ public class NoteDetailFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         if (getArguments() != null) {
-            String noteId = getArguments().getString(ARG_NOTE_ID);
+            mNoteId = getArguments().getString(ARG_NOTE_ID);
 
-            if (noteId == null) {
+            if (mNoteId == null) {
                 throw new IllegalArgumentException("Must pass ARG_NOTE_ID");
-            }
-
-            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-            if (user != null) {
-                reference.child(Note.USER_CHILD).child(user.getUid()).child(Note.NOTES_CHILD).child(noteId).addListenerForSingleValueEvent(
-                        new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                // Get note value
-                                mNote = dataSnapshot.getValue(Note.class);
-                                mTitleView.setText(mNote.getTitle());
-                                mDescriptionView.setText(mNote.getDescription());
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                                Timber.w(databaseError.toException(), "getNote:onCancelled");
-                            }
-                        });
-            } else {
-                Timber.e("User not authorized");
             }
         }
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user != null) {
+            reference.child(Note.USER_CHILD).child(user.getUid()).child(Note.NOTES_CHILD).child(mNoteId).addListenerForSingleValueEvent(
+                    new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            // Get note value
+                            mNote = dataSnapshot.getValue(Note.class);
+                            mTitleView.setText(mNote.getTitle());
+                            mDescriptionView.setText(mNote.getDescription());
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Timber.w(databaseError.toException(), "getNote:onCancelled");
+                        }
+                    });
+        } else {
+            Timber.e("User not authorized");
+        }
     }
 
     @Override
