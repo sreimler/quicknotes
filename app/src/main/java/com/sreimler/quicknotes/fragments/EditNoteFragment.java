@@ -26,8 +26,11 @@ import android.widget.EditText;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sreimler.quicknotes.R;
 import com.sreimler.quicknotes.models.Note;
 
@@ -45,6 +48,8 @@ import timber.log.Timber;
  */
 public class EditNoteFragment extends Fragment {
 
+    public static final String ARG_NOTE_ID = "note_id";
+
     @BindView(R.id.edit_note__etxt_note_title)
     EditText mTitleEtxt;
 
@@ -53,6 +58,8 @@ public class EditNoteFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     private DatabaseReference mDatabaseReference;
+    private Note mNote;
+    private String mNoteId;
 
     public EditNoteFragment() {
         // Required empty public constructor
@@ -61,10 +68,17 @@ public class EditNoteFragment extends Fragment {
     /**
      * Creates an instance of {@link EditNoteFragment}.
      *
+     * @param noteId Optional {@link Note} id for editing a note; if null, a new note is created.
      * @return A new fragment instance.
      */
-    public static EditNoteFragment newInstance() {
-        return new EditNoteFragment();
+    public static EditNoteFragment newInstance(String noteId) {
+        EditNoteFragment fragment = new EditNoteFragment();
+
+        Bundle args = new Bundle();
+        args.putString(ARG_NOTE_ID, noteId);
+        fragment.setArguments(args);
+
+        return fragment;
     }
 
     /**
@@ -81,6 +95,33 @@ public class EditNoteFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_edit_note, container, false);
         ButterKnife.bind(this, view);
+
+        mNoteId = getArguments().getString(ARG_NOTE_ID);
+        if (mNoteId != null) {
+            // Edit an existing note - pre-fill ui with values of the note object
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+            if (user != null) {
+                reference.child(Note.USER_CHILD).child(user.getUid()).child(Note.NOTES_CHILD).child(mNoteId).addListenerForSingleValueEvent(
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                // Get note value
+                                mNote = dataSnapshot.getValue(Note.class);
+                                mTitleEtxt.setText(mNote.getTitle());
+                                mDescriptionEtxt.setText(mNote.getDescription());
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Timber.w(databaseError.toException(), "getNote:onCancelled");
+                            }
+                        });
+            } else {
+                Timber.e("User not authorized");
+            }
+        }
 
         return view;
     }
@@ -108,14 +149,22 @@ public class EditNoteFragment extends Fragment {
     protected void save() {
         String title = mTitleEtxt.getText().toString();
         String description = mDescriptionEtxt.getText().toString();
-        Note note = new Note(title, description);
 
-        // Store note in Firebase
+        // Get the Firebase reference
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         if (user != null) {
-            mDatabaseReference.child(Note.USER_CHILD).child(user.getUid()).child(Note.NOTES_CHILD).push().setValue(note);
+            if (mNoteId == null) {
+                // Create new note
+                mNote = new Note(title, description);
+                mDatabaseReference.child(Note.USER_CHILD).child(user.getUid()).child(Note.NOTES_CHILD).push().setValue(mNote);
+            } else {
+                // Update the existing note object
+                mNote.setTitle(title);
+                mNote.setDescription(description);
+                mDatabaseReference.child(Note.USER_CHILD).child(user.getUid()).child(Note.NOTES_CHILD).child(mNoteId).setValue(mNote);
+            }
 
             // Inform the hosting activity
             mListener.noteSaved();

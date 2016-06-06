@@ -16,6 +16,7 @@
 
 package com.sreimler.quicknotes.activities;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +31,8 @@ import com.sreimler.quicknotes.R;
 import com.sreimler.quicknotes.fragments.NoteDetailFragment;
 import com.sreimler.quicknotes.models.Note;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import timber.log.Timber;
 
 /**
@@ -45,6 +48,7 @@ public class NoteDetailActivity extends AppCompatActivity implements NoteDetailF
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_detail);
+        ButterKnife.bind(this);
 
         // Get post key from intent
         mNoteId = getIntent().getStringExtra(EXTRA_NOTE_ID);
@@ -54,7 +58,7 @@ public class NoteDetailActivity extends AppCompatActivity implements NoteDetailF
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(android.R.id.content, NoteDetailFragment.newInstance(mNoteId))
+                .add(R.id.note_detail__container, NoteDetailFragment.newInstance(mNoteId))
                 .commit();
     }
 
@@ -85,6 +89,13 @@ public class NoteDetailActivity extends AppCompatActivity implements NoteDetailF
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @OnClick(R.id.note_detail__fab)
+    void editNote() {
+        Intent intent = new Intent(this, EditNoteActivity.class);
+        intent.putExtra(EditNoteActivity.EXTRA_NOTE_ID, mNoteId);
+        startActivity(intent);
     }
 
     @Override

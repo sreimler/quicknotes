@@ -27,14 +27,19 @@ import com.sreimler.quicknotes.fragments.EditNoteFragment;
  */
 public class EditNoteActivity extends AppCompatActivity implements EditNoteFragment.OnFragmentInteractionListener {
 
+    public static final String EXTRA_NOTE_ID = "note_id";
+
+    private String mNoteId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_note);
 
+        mNoteId = getIntent().getStringExtra(EXTRA_NOTE_ID);
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(android.R.id.content, EditNoteFragment.newInstance())
+                .add(android.R.id.content, EditNoteFragment.newInstance(mNoteId))
                 .commit();
     }
 

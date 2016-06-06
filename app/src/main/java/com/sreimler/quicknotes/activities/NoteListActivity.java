@@ -75,8 +75,8 @@ public class NoteListActivity extends AppCompatActivity implements NoteListFragm
         }
     }
 
-    @OnClick(R.id.fab)
-    void editNote() {
+    @OnClick(R.id.note_list__fab)
+    void createNote() {
         Intent intent = new Intent(this, EditNoteActivity.class);
         startActivity(intent);
     }
@@ -87,11 +87,11 @@ public class NoteListActivity extends AppCompatActivity implements NoteListFragm
         if (mFragmentManager.getBackStackEntryCount() == 0) {
             // The first fragment should be added to the container
             // and not be placed in the back stack
-            transaction.add(R.id.container, fragment, tag);
+            transaction.add(R.id.note_list__container, fragment, tag);
         } else {
             // Consecutive fragments should replace the initial fragment
             // and be added to the back stack to allow proper navigation
-            transaction.replace(R.id.container, fragment, tag)
+            transaction.replace(R.id.note_list__container, fragment, tag)
                     .addToBackStack(null);
         }
 
