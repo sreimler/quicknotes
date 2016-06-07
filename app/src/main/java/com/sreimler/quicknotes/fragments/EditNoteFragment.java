@@ -24,14 +24,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sreimler.quicknotes.R;
+import com.sreimler.quicknotes.helpers.FirebaseUtil;
 import com.sreimler.quicknotes.models.Note;
 
 import butterknife.BindView;
@@ -57,7 +55,6 @@ public class EditNoteFragment extends Fragment {
     EditText mDescriptionEtxt;
 
     private OnFragmentInteractionListener mListener;
-    private DatabaseReference mDatabaseReference;
     private Note mNote;
     private String mNoteId;
 
@@ -89,11 +86,9 @@ public class EditNoteFragment extends Fragment {
         mNoteId = getArguments().getString(ARG_NOTE_ID);
         if (mNoteId != null) {
             // Edit an existing note - pre-fill ui with values of the note object
-            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-            if (user != null) {
-                reference.child(Note.USER_CHILD).child(user.getUid()).child(Note.NOTES_CHILD).child(mNoteId).addListenerForSingleValueEvent(
+            DatabaseReference ref = FirebaseUtil.getNoteRef();
+            if (ref != null) {
+                ref.child(mNoteId).addListenerForSingleValueEvent(
                         new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -109,7 +104,7 @@ public class EditNoteFragment extends Fragment {
                             }
                         });
             } else {
-                Timber.e("User not authorized");
+                Timber.e("Error on getting note details");
             }
         }
 
@@ -140,31 +135,20 @@ public class EditNoteFragment extends Fragment {
         String title = mTitleEtxt.getText().toString();
         String description = mDescriptionEtxt.getText().toString();
 
-        // Get the Firebase reference
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        if (user != null) {
-            if (mNoteId == null) {
-                // Create new note
-                mNote = new Note(title, description);
-                DatabaseReference ref = mDatabaseReference.child(Note.USER_CHILD).child(user.getUid()).child(Note.NOTES_CHILD).push();
-                ref.setValue(mNote);
-                mNoteId = ref.getKey();
-            } else {
-                // Update the existing note object
-                mNote.setTitle(title);
-                mNote.setDescription(description);
-                mDatabaseReference.child(Note.USER_CHILD).child(user.getUid()).child(Note.NOTES_CHILD).child(mNoteId).setValue(mNote);
-            }
-
-            // Inform the hosting activity
-            mListener.noteSaved(mNoteId);
+        if (mNoteId == null) {
+            // Create new note
+            mNote = new Note(title, description);
+            mNoteId = FirebaseUtil.addNote(mNote);
         } else {
-            Timber.e("User not authorized");
+            // Update the existing note object
+            mNote.setTitle(title);
+            mNote.setDescription(description);
+            FirebaseUtil.updateNote(mNoteId, mNote);
         }
-    }
 
+        // Inform the hosting activity
+        mListener.noteSaved(mNoteId);
+    }
 
     /**
      * This interface must be implemented by activities that contain this

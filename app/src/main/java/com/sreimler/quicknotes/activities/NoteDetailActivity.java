@@ -23,13 +23,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.sreimler.quicknotes.R;
 import com.sreimler.quicknotes.fragments.NoteDetailFragment;
-import com.sreimler.quicknotes.models.Note;
+import com.sreimler.quicknotes.helpers.FirebaseUtil;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -74,17 +71,13 @@ public class NoteDetailActivity extends AppCompatActivity implements NoteDetailF
         switch (item.getItemId()) {
             case R.id.action_delete_note:
                 // TODO: Request deletion confirmation
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-                if (user != null) {
-                    ref.child(Note.USER_CHILD).child(user.getUid()).child(Note.NOTES_CHILD).child(mNoteId).removeValue();
+                DatabaseReference ref = FirebaseUtil.getNoteRef();
+                if (ref != null) {
+                    ref.child(mNoteId).removeValue();
+                    Timber.i("Note deleted!");
                 } else {
-                    Timber.e("User not authorized");
+                    Timber.e("Error on deleting note");
                 }
-
-                Timber.i("Note deleted!");
                 finish();
             default:
                 return super.onOptionsItemSelected(item);

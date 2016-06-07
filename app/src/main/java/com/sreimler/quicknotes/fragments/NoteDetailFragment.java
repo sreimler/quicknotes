@@ -25,14 +25,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sreimler.quicknotes.R;
+import com.sreimler.quicknotes.helpers.FirebaseUtil;
 import com.sreimler.quicknotes.models.Note;
 
 import butterknife.BindView;
@@ -47,13 +45,13 @@ import timber.log.Timber;
  * create an instance of this fragment.
  */
 public class NoteDetailFragment extends Fragment {
+
     public static final String ARG_NOTE_ID = "note_id";
 
     private Note mNote;
     private String mNoteId;
 
     private OnFragmentInteractionListener mListener;
-    private DatabaseReference mDatabaseReference;
 
     @BindView(R.id.note_detail__txtv_note_title)
     TextView mTitleView;
@@ -107,11 +105,9 @@ public class NoteDetailFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        if (user != null) {
-            reference.child(Note.USER_CHILD).child(user.getUid()).child(Note.NOTES_CHILD).child(mNoteId).addListenerForSingleValueEvent(
+        DatabaseReference ref = FirebaseUtil.getNoteRef();
+        if (ref != null) {
+            ref.child(mNoteId).addListenerForSingleValueEvent(
                     new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -126,8 +122,6 @@ public class NoteDetailFragment extends Fragment {
                             Timber.w(databaseError.toException(), "getNote:onCancelled");
                         }
                     });
-        } else {
-            Timber.e("User not authorized");
         }
     }
 

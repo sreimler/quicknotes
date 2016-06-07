@@ -26,17 +26,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.sreimler.quicknotes.R;
 import com.sreimler.quicknotes.adapters.NoteViewHolder;
+import com.sreimler.quicknotes.helpers.FirebaseUtil;
 import com.sreimler.quicknotes.models.Note;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 /**
  * Displays a list of notes.
@@ -45,7 +42,6 @@ public class NoteListFragment extends Fragment {
 
     public static final String TAG = "note_list_fragment";
 
-    private DatabaseReference mReference;
     private FirebaseRecyclerAdapter mAdapter;
     private OnFragmentInteractionListener mListener;
 
@@ -70,40 +66,32 @@ public class NoteListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_note_list, container, false);
         ButterKnife.bind(this, view);
 
-        // Get Firebase db reference
-        mReference = FirebaseDatabase.getInstance().getReference();
-
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(manager);
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            mAdapter = new FirebaseRecyclerAdapter<Note, NoteViewHolder>(
-                    Note.class,
-                    R.layout.item_note,
-                    NoteViewHolder.class,
-                    mReference.child(Note.USER_CHILD).child(user.getUid()).child(Note.NOTES_CHILD)) {
-                @Override
-                protected void populateViewHolder(NoteViewHolder viewHolder, Note note, int position) {
-                    final DatabaseReference postRef = getRef(position);
+        mAdapter = new FirebaseRecyclerAdapter<Note, NoteViewHolder>(
+                Note.class,
+                R.layout.item_note,
+                NoteViewHolder.class,
+                FirebaseUtil.getNoteRef()) {
+            @Override
+            protected void populateViewHolder(NoteViewHolder viewHolder, Note note, int position) {
+                final DatabaseReference postRef = getRef(position);
 
-                    // Set click listener for the whole post view
-                    final String noteId = postRef.getKey();
-                    viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            // Notify NoteListActivity about the click
-                            mListener.listItemClicked(noteId);
-                        }
-                    });
+                // Set click listener for the whole post view
+                final String noteId = postRef.getKey();
+                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // Notify NoteListActivity about the click
+                        mListener.listItemClicked(noteId);
+                    }
+                });
 
-                    viewHolder.bind(note);
-                }
-            };
-            mRecyclerView.setAdapter(mAdapter);
-        } else {
-            Timber.e("User not authorized");
-        }
+                viewHolder.bind(note);
+            }
+        };
+        mRecyclerView.setAdapter(mAdapter);
 
         return view;
     }

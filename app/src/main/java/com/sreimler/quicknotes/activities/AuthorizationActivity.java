@@ -21,9 +21,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.firebase.ui.auth.AuthUI;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.sreimler.quicknotes.R;
+import com.sreimler.quicknotes.helpers.FirebaseUtil;
 
 import timber.log.Timber;
 
@@ -33,14 +32,10 @@ import timber.log.Timber;
  */
 public class AuthorizationActivity extends AppCompatActivity {
 
-    private FirebaseAuth mAuth;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authorization);
-
-        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -48,17 +43,19 @@ public class AuthorizationActivity extends AppCompatActivity {
         super.onResume();
 
         // Check the user auth state
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user == null) {
+        String userId = FirebaseUtil.getCurrentUserId();
+        if (userId == null) {
             Timber.d("user is signed out");
 
             // User is signed out, show the Firebase signup/login activity
-            startActivity(AuthUI.getInstance().createSignInIntentBuilder()
+            startActivity(AuthUI
+                    .getInstance()
+                    .createSignInIntentBuilder()
                     .setProviders(AuthUI.EMAIL_PROVIDER,
                             AuthUI.GOOGLE_PROVIDER)
                     .build());
         } else {
-            Timber.d("user is signed in with id %s", user.getUid());
+            Timber.d("user is signed in with id %s", userId);
 
             // User is signed in, redirect to the note list
             startActivity(new Intent(this, NoteListActivity.class));

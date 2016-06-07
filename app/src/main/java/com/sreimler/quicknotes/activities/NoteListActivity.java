@@ -26,9 +26,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.sreimler.quicknotes.R;
 import com.sreimler.quicknotes.fragments.NoteListFragment;
+import com.sreimler.quicknotes.helpers.FirebaseUtil;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -37,8 +37,6 @@ import butterknife.OnClick;
  * Coordinates the main view of the app.
  */
 public class NoteListActivity extends AppCompatActivity implements NoteListFragment.OnFragmentInteractionListener {
-
-    private static final int RC_SIGN_IN = 9001;
 
     private FragmentManager mFragmentManager;
 
@@ -67,7 +65,7 @@ public class NoteListActivity extends AppCompatActivity implements NoteListFragm
         switch (item.getItemId()) {
             case R.id.action_sign_out:
                 // Sign the user out and redirect to the AuthorizationActivity
-                FirebaseAuth.getInstance().signOut();
+                FirebaseUtil.signOut();
                 startActivity(new Intent(NoteListActivity.this, AuthorizationActivity.class));
                 finish();
             default:
