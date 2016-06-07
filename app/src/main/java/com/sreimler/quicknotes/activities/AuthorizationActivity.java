@@ -28,7 +28,7 @@ import timber.log.Timber;
 
 /**
  * Handles the user authorization.
- * After successful authorization, the {@link NoteListActivity} is started.
+ * After successful authorization, the {@link MainActivity} is started.
  */
 public class AuthorizationActivity extends AppCompatActivity {
 
@@ -58,7 +58,7 @@ public class AuthorizationActivity extends AppCompatActivity {
             Timber.d("user is signed in with id %s", userId);
 
             // User is signed in, redirect to the note list
-            startActivity(new Intent(this, NoteListActivity.class));
+            startActivity(new Intent(this, MainActivity.class));
             finish();
         }
     }

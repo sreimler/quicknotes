@@ -83,7 +83,7 @@ public class NoteListFragment extends Fragment {
                 viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // Notify NoteListActivity about the click
+                        // Notify the hosting activity about the click
                         mListener.listItemClicked(noteId);
                     }
                 });

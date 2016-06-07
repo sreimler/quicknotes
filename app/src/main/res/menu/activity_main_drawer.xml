@@ -15,13 +15,13 @@
   ~ limitations under the License.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-      xmlns:tools="http://schemas.android.com/tools"
-      tools:context=".activities.MainActivity">
-    <item
-        android:id="@+id/action_sign_out"
-        android:orderInCategory="100"
-        android:title="@string/action_sign_out"
-        app:showAsAction="never"/>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_item_note_list"
+            android:icon="@drawable/ic_list_white_48dp"
+            android:title="@string/nav_drawer_item_note_list"/>
+    </group>
+
 </menu>

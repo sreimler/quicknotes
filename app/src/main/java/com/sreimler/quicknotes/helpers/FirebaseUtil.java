@@ -33,12 +33,21 @@ public class FirebaseUtil {
     public static final String NOTES_CHILD = "notes";
 
     /**
-     * Gets the ID of the currently signed in user.
+     * Gets the currently signed in {@link FirebaseUser} object.
      *
-     * @return The ID of the signed in user, or null.
+     * @return The {@link FirebaseUser}, or null.
+     */
+    public static FirebaseUser getCurrentUser() {
+        return FirebaseAuth.getInstance().getCurrentUser();
+    }
+
+    /**
+     * Gets the ID of the currently signed in {@link FirebaseUser}.
+     *
+     * @return The ID of the signed in {@link FirebaseUser}, or null.
      */
     public static String getCurrentUserId() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser user = getCurrentUser();
         if (user != null) {
             return user.getUid();
         }

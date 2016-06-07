@@ -6,4 +6,8 @@
     <string name="notes_child">notes</string>
     <string name="action_sign_out">Sign Out</string>
     <string name="action_delete_note">Delete</string>
+    <string name="nav_drawer_item_note_list">Note List</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header__imgv_content_description">Navigation header image</string>
 </resources>

@@ -18,39 +18,83 @@ package com.sreimler.quicknotes.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.sreimler.quicknotes.R;
 import com.sreimler.quicknotes.fragments.NoteListFragment;
 import com.sreimler.quicknotes.helpers.FirebaseUtil;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
  * Coordinates the main view of the app.
  */
-public class NoteListActivity extends AppCompatActivity implements NoteListFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements NoteListFragment.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener {
 
     private FragmentManager mFragmentManager;
+    private TextView mUserNameTextView;
+    private TextView mUserEmailTextView;
+
+    @BindView(R.id.nav_view)
+    NavigationView mNavigationView;
+
+    @BindView(R.id.drawer_layout)
+    DrawerLayout mDrawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_note_list);
+        setContentView(R.layout.main_drawer_layout);
         ButterKnife.bind(this);
 
+        // Setup the toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        mFragmentManager = getSupportFragmentManager();
 
+        // Add the note list fragment
+        mFragmentManager = getSupportFragmentManager();
         addFragment(NoteListFragment.newInstance(), NoteListFragment.TAG);
+
+        // Configure the drawer layout
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this,
+                mDrawer,
+                toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close
+        );
+        mDrawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        // In order to access the elements of the navigation here,
+        // the navigation view header layout has to be inflated manually
+        View navigationHeader = mNavigationView.getHeaderView(0);
+        mNavigationView.getMenu().getItem(0).setChecked(true);
+        mNavigationView.setNavigationItemSelectedListener(this);
+
+        // Display the user account details in the navigation view header
+        FirebaseUser user = FirebaseUtil.getCurrentUser();
+        if (user != null) {
+            mUserNameTextView = ButterKnife.findById(navigationHeader, R.id.nav_header__txtv_user_name);
+            mUserNameTextView.setText(user.getDisplayName());
+            mUserEmailTextView = ButterKnife.findById(navigationHeader, R.id.nav_header__txtv_user_email);
+            mUserEmailTextView.setText(user.getEmail());
+        }
     }
 
     @Override
@@ -66,10 +110,33 @@ public class NoteListActivity extends AppCompatActivity implements NoteListFragm
             case R.id.action_sign_out:
                 // Sign the user out and redirect to the AuthorizationActivity
                 FirebaseUtil.signOut();
-                startActivity(new Intent(NoteListActivity.this, AuthorizationActivity.class));
+                startActivity(new Intent(MainActivity.this, AuthorizationActivity.class));
                 finish();
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks
+        switch (item.getItemId()) {
+            case R.id.nav_item_note_list:
+                break;
+        }
+
+        mDrawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawer.isDrawerOpen(GravityCompat.START)) {
+            // If the navigation drawer is opened, close the drawer
+            mDrawer.closeDrawer(GravityCompat.START);
+        } else {
+            // Otherwise, execute the default behavior
+            super.onBackPressed();
         }
     }
 

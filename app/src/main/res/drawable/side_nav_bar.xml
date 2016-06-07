@@ -15,13 +15,13 @@
   ~ limitations under the License.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-      xmlns:tools="http://schemas.android.com/tools"
-      tools:context=".activities.MainActivity">
-    <item
-        android:id="@+id/action_sign_out"
-        android:orderInCategory="100"
-        android:title="@string/action_sign_out"
-        app:showAsAction="never"/>
-</menu>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+       android:shape="rectangle">
+    <!-- TODO: Customize drawer colors to match app design -->
+    <gradient
+        android:angle="135"
+        android:centerColor="#4CAF50"
+        android:endColor="#2E7D32"
+        android:startColor="#81C784"
+        android:type="linear"/>
+</shape>
