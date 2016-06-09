@@ -38,6 +38,12 @@ public class EditNoteActivity extends AppCompatActivity implements EditNoteFragm
         setContentView(R.layout.activity_edit_note);
 
         mNoteId = getIntent().getStringExtra(EXTRA_NOTE_ID);
+        if (mNoteId == null) {
+            setTitle("Create Note");
+        } else {
+            setTitle("Edit Note");
+        }
+
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.edit_note__container, EditNoteFragment.newInstance(mNoteId))
