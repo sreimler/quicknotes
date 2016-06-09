@@ -42,4 +42,7 @@ dependencies {
     compile 'com.google.firebase:firebase-database:9.0.1'
     compile 'com.firebaseui:firebase-ui:0.4.0'
     compile 'com.firebaseui:firebase-ui-auth:0.4.0'
+
+    // CircleImageView
+    compile 'de.hdodenhof:circleimageview:2.0.0'
 }
