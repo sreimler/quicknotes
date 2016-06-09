@@ -47,17 +47,13 @@ import timber.log.Timber;
 public class NoteDetailFragment extends Fragment {
 
     public static final String ARG_NOTE_ID = "note_id";
-
-    private Note mNote;
-    private String mNoteId;
-
-    private OnFragmentInteractionListener mListener;
-
     @BindView(R.id.note_detail__txtv_note_title)
     TextView mTitleView;
-
     @BindView(R.id.note_detail__txtv_note_description)
     TextView mDescriptionView;
+    private Note mNote;
+    private String mNoteId;
+    private OnFragmentInteractionListener mListener;
 
     public NoteDetailFragment() {
         // Required empty public constructor

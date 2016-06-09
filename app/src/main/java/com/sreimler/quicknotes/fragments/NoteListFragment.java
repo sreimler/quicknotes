@@ -41,12 +41,10 @@ import butterknife.ButterKnife;
 public class NoteListFragment extends Fragment {
 
     public static final String TAG = "note_list_fragment";
-
-    private FirebaseRecyclerAdapter mAdapter;
-    private OnFragmentInteractionListener mListener;
-
     @BindView(R.id.fragment_note_list__recycler_view)
     RecyclerView mRecyclerView;
+    private FirebaseRecyclerAdapter mAdapter;
+    private OnFragmentInteractionListener mListener;
 
     public NoteListFragment() {
     }

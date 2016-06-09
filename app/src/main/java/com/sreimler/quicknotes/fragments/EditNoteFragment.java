@@ -19,7 +19,15 @@ package com.sreimler.quicknotes.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -34,7 +42,6 @@ import com.sreimler.quicknotes.models.Note;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import timber.log.Timber;
 
 /**
@@ -54,9 +61,14 @@ public class EditNoteFragment extends Fragment {
     @BindView(R.id.edit_note__etxt_note_description)
     EditText mDescriptionEtxt;
 
+    @BindView(R.id.edit_note__toolbar)
+    Toolbar mToolbar;
+
     private OnFragmentInteractionListener mListener;
     private Note mNote;
     private String mNoteId;
+    private MenuItem mSavingMenuItem;
+    private boolean mIsSavingAllowed = false;
 
     public EditNoteFragment() {
         // Required empty public constructor
@@ -83,6 +95,15 @@ public class EditNoteFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_edit_note, container, false);
         ButterKnife.bind(this, view);
 
+        // Add the actionbar from here so that the fragment controls note saving
+        AppCompatActivity activity = ((AppCompatActivity) getActivity());
+        activity.setSupportActionBar(mToolbar);
+        ActionBar actionBar = activity.getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            setHasOptionsMenu(true);
+        }
+
         mNoteId = getArguments().getString(ARG_NOTE_ID);
         if (mNoteId != null) {
             // Edit an existing note - pre-fill ui with values of the note object
@@ -95,7 +116,10 @@ public class EditNoteFragment extends Fragment {
                                 // Get note value
                                 mNote = dataSnapshot.getValue(Note.class);
                                 mTitleEtxt.setText(mNote.getTitle());
-                                mDescriptionEtxt.setText(mNote.getDescription());
+                                // Set the cursor to the end of the description field
+                                mDescriptionEtxt.requestFocus();
+                                mDescriptionEtxt.append(mNote.getDescription());
+                                setSavingAllowed(true);
                             }
 
                             @Override
@@ -108,7 +132,71 @@ public class EditNoteFragment extends Fragment {
             }
         }
 
+        mTitleEtxt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Saving should be prevented when the title is empty
+                setSavingAllowed(s.length() > 0);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
         return view;
+    }
+
+    private void setSavingAllowed(boolean allowed) {
+        mIsSavingAllowed = allowed;
+        if (mSavingMenuItem != null) {
+            if (mIsSavingAllowed) {
+                mSavingMenuItem.setIcon(R.drawable.ic_action_done);
+            } else {
+                mSavingMenuItem.setIcon(R.drawable.ic_action_done_inactive);
+            }
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_edit_note, menu);
+        mSavingMenuItem = menu.findItem(R.id.action_save_note);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_save_note:
+                if (mIsSavingAllowed) {
+                    String title = mTitleEtxt.getText().toString();
+                    String description = mDescriptionEtxt.getText().toString();
+
+                    if (mNoteId == null) {
+                        // Create new note
+                        mNote = new Note(title, description);
+                        mNoteId = FirebaseUtil.addNote(mNote);
+                    } else {
+                        // Update the existing note object
+                        mNote.setTitle(title);
+                        mNote.setDescription(description);
+                        FirebaseUtil.updateNote(mNoteId, mNote);
+                    }
+
+                    // Inform the hosting activity
+                    mListener.noteSaved(mNoteId);
+                } else {
+                    // TODO: Saving not allowed - display snackbar?
+                }
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -128,26 +216,6 @@ public class EditNoteFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    @OnClick(R.id.edit_note__btn_save)
-    protected void save() {
-        String title = mTitleEtxt.getText().toString();
-        String description = mDescriptionEtxt.getText().toString();
-
-        if (mNoteId == null) {
-            // Create new note
-            mNote = new Note(title, description);
-            mNoteId = FirebaseUtil.addNote(mNote);
-        } else {
-            // Update the existing note object
-            mNote.setTitle(title);
-            mNote.setDescription(description);
-            FirebaseUtil.updateNote(mNoteId, mNote);
-        }
-
-        // Inform the hosting activity
-        mListener.noteSaved(mNoteId);
     }
 
     /**

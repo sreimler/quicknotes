@@ -15,17 +15,14 @@
   ~ limitations under the License.
   -->
 
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context="com.sreimler.quicknotes.activities.EditNoteActivity">
-
-    <FrameLayout
-        android:id="@+id/edit_note__container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-</android.support.design.widget.CoordinatorLayout>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context=".activities.MainActivity">
+    <item
+        android:id="@+id/action_save_note"
+        android:orderInCategory="100"
+        android:title="@string/action_save_note"
+        android:icon="@drawable/ic_action_done_inactive"
+        app:showAsAction="always"/>
+</menu>

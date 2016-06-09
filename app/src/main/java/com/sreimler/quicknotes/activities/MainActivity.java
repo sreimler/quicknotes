@@ -46,15 +46,15 @@ import butterknife.OnClick;
  */
 public class MainActivity extends AppCompatActivity implements NoteListFragment.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener {
 
+    @BindView(R.id.nav_view)
+    NavigationView mNavigationView;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout mDrawer;
+    @BindView(R.id.main__toolbar)
+    Toolbar mToolbar;
     private FragmentManager mFragmentManager;
     private TextView mUserNameTextView;
     private TextView mUserEmailTextView;
-
-    @BindView(R.id.nav_view)
-    NavigationView mNavigationView;
-
-    @BindView(R.id.drawer_layout)
-    DrawerLayout mDrawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +63,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         ButterKnife.bind(this);
 
         // Setup the toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
 
         // Add the note list fragment
         mFragmentManager = getSupportFragmentManager();
@@ -74,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this,
                 mDrawer,
-                toolbar,
+                mToolbar,
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close
         );
@@ -140,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         }
     }
 
-    @OnClick(R.id.note_list__fab)
+    @OnClick(R.id.main__fab)
     void createNote() {
         Intent intent = new Intent(this, EditNoteActivity.class);
         startActivity(intent);
@@ -152,11 +151,11 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         if (mFragmentManager.getBackStackEntryCount() == 0) {
             // The first fragment should be added to the container
             // and not be placed in the back stack
-            transaction.add(R.id.note_list__container, fragment, tag);
+            transaction.add(R.id.main__container, fragment, tag);
         } else {
             // Consecutive fragments should replace the initial fragment
             // and be added to the back stack to allow proper navigation
-            transaction.replace(R.id.note_list__container, fragment, tag)
+            transaction.replace(R.id.main__container, fragment, tag)
                     .addToBackStack(null);
         }
 

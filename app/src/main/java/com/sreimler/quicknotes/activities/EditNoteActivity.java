@@ -40,7 +40,7 @@ public class EditNoteActivity extends AppCompatActivity implements EditNoteFragm
         mNoteId = getIntent().getStringExtra(EXTRA_NOTE_ID);
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(android.R.id.content, EditNoteFragment.newInstance(mNoteId))
+                .add(R.id.edit_note__container, EditNoteFragment.newInstance(mNoteId))
                 .commit();
     }
 
