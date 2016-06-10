@@ -19,6 +19,7 @@ package com.sreimler.quicknotes.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -51,6 +52,12 @@ public class NoteDetailActivity extends AppCompatActivity implements NoteDetailF
         mNoteId = getIntent().getStringExtra(EXTRA_NOTE_ID);
         if (mNoteId == null) {
             throw new IllegalArgumentException("Must pass EXTRA_NOTE_ID");
+        }
+
+        // Hide the actionbar title
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayShowTitleEnabled(false);
         }
 
         getSupportFragmentManager()
