@@ -11,4 +11,6 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header__imgv_content_description">Navigation header image</string>
     <string name="action_save_note">Save</string>
+    <string name="title_create_note">Create Note</string>
+    <string name="title_edit_note">Edit Note</string>
 </resources>

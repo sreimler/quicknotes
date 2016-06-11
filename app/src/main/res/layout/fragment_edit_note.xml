@@ -16,63 +16,41 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <android.support.design.widget.AppBarLayout
+    <EditText
+        android:id="@+id/edit_note__etxt_note_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:background="@null"
+        android:hint="@string/hint_etxt_title"
+        android:paddingBottom="@dimen/etxt_vertical_padding"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/etxt_vertical_padding"
+        android:textColor="@color/color_note_title"
+        android:textSize="@dimen/text_size_note_title"/>
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/edit_note__toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay"/>
-
-    </android.support.design.widget.AppBarLayout>
-
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="1dp"
+        android:background="@color/color_divider"/>
 
-        <EditText
-            android:id="@+id/edit_note__etxt_note_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:hint="@string/hint_etxt_title"
-            android:paddingBottom="@dimen/etxt_vertical_padding"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:paddingTop="@dimen/etxt_vertical_padding"
-            android:textColor="@color/color_note_title"
-            android:textSize="@dimen/text_size_note_title"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/color_divider"/>
-
-        <EditText
-            android:id="@+id/edit_note__etxt_note_description"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@null"
-            android:gravity="top"
-            android:hint="@string/hint_etxt_description"
-            android:inputType="textMultiLine"
-            android:paddingBottom="@dimen/etxt_vertical_padding"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:paddingTop="@dimen/etxt_vertical_padding"
-            android:textSize="@dimen/text_size_note_description"/>
-
-    </LinearLayout>
+    <EditText
+        android:id="@+id/edit_note__etxt_note_description"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@null"
+        android:gravity="top"
+        android:hint="@string/hint_etxt_description"
+        android:inputType="textMultiLine"
+        android:paddingBottom="@dimen/etxt_vertical_padding"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/etxt_vertical_padding"
+        android:textSize="@dimen/text_size_note_description"/>
 
 </LinearLayout>

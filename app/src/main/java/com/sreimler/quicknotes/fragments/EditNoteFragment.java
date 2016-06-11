@@ -18,10 +18,8 @@ package com.sreimler.quicknotes.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -61,9 +59,6 @@ public class EditNoteFragment extends Fragment {
     @BindView(R.id.edit_note__etxt_note_description)
     EditText mDescriptionEtxt;
 
-    @BindView(R.id.edit_note__toolbar)
-    Toolbar mToolbar;
-
     private OnFragmentInteractionListener mListener;
     private Note mNote;
     private String mNoteId;
@@ -91,68 +86,90 @@ public class EditNoteFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Retain this fragment across configuration changes.
+        setRetainInstance(true);
+
+        // Manage the options menu entry in the fragment
+        setHasOptionsMenu(true);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_edit_note, container, false);
         ButterKnife.bind(this, view);
 
-        // Add the actionbar from here so that the fragment controls note saving
-        AppCompatActivity activity = ((AppCompatActivity) getActivity());
-        activity.setSupportActionBar(mToolbar);
-        ActionBar actionBar = activity.getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            setHasOptionsMenu(true);
+        if (savedInstanceState == null) {
+            // When the view is created for the first time, check if it
+            // should be pre-filled with values of a note object
+            mNoteId = getArguments().getString(ARG_NOTE_ID);
+            if (mNoteId != null) {
+                // Edit an existing note - pre-fill ui with values of the note object
+                DatabaseReference ref = FirebaseUtil.getNoteRef();
+                if (ref != null) {
+                    ref.child(mNoteId).addListenerForSingleValueEvent(
+                            new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    // Get note value
+                                    mNote = dataSnapshot.getValue(Note.class);
+                                    mTitleEtxt.setText(mNote.getTitle());
+                                    // Set the cursor to the end of the description field
+                                    mDescriptionEtxt.requestFocus();
+                                    mDescriptionEtxt.setText(mNote.getDescription());
+                                    mDescriptionEtxt.setSelection(mDescriptionEtxt.getText().length());
+                                    setSavingAllowed(true);
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    Timber.w(databaseError.toException(), "getNote:onCancelled");
+                                }
+                            });
+                } else {
+                    Timber.e("Error on getting note details");
+                }
+            }
+
+            mTitleEtxt.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    // Saving should be prevented when the title is empty
+                    setSavingAllowed(s.length() > 0);
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
+            });
         }
-
-        mNoteId = getArguments().getString(ARG_NOTE_ID);
-        if (mNoteId != null) {
-            // Edit an existing note - pre-fill ui with values of the note object
-            DatabaseReference ref = FirebaseUtil.getNoteRef();
-            if (ref != null) {
-                ref.child(mNoteId).addListenerForSingleValueEvent(
-                        new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                // Get note value
-                                mNote = dataSnapshot.getValue(Note.class);
-                                mTitleEtxt.setText(mNote.getTitle());
-                                // Set the cursor to the end of the description field
-                                mDescriptionEtxt.requestFocus();
-                                mDescriptionEtxt.append(mNote.getDescription());
-                                setSavingAllowed(true);
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                                Timber.w(databaseError.toException(), "getNote:onCancelled");
-                            }
-                        });
-            } else {
-                Timber.e("Error on getting note details");
-            }
-        }
-
-        mTitleEtxt.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Saving should be prevented when the title is empty
-                setSavingAllowed(s.length() > 0);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
 
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (mNoteId == null) {
+            getActivity().setTitle(getString(R.string.title_create_note));
+        } else {
+            getActivity().setTitle(getString(R.string.title_edit_note));
+        }
+    }
+
     private void setSavingAllowed(boolean allowed) {
         mIsSavingAllowed = allowed;
+        updateSavingIcon();
+    }
+
+    private void updateSavingIcon() {
         if (mSavingMenuItem != null) {
             if (mIsSavingAllowed) {
                 mSavingMenuItem.setIcon(R.drawable.ic_action_done);
@@ -164,8 +181,10 @@ public class EditNoteFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
         inflater.inflate(R.menu.menu_edit_note, menu);
         mSavingMenuItem = menu.findItem(R.id.action_save_note);
+        updateSavingIcon();
         super.onCreateOptionsMenu(menu, inflater);
     }
 

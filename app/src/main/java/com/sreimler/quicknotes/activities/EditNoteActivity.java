@@ -18,7 +18,9 @@ package com.sreimler.quicknotes.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 
 import com.sreimler.quicknotes.R;
 import com.sreimler.quicknotes.fragments.EditNoteFragment;
@@ -30,34 +32,42 @@ public class EditNoteActivity extends AppCompatActivity implements EditNoteFragm
 
     public static final String EXTRA_NOTE_ID = "note_id";
 
-    private String mNoteId;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_note);
 
-        mNoteId = getIntent().getStringExtra(EXTRA_NOTE_ID);
-        if (mNoteId == null) {
-            setTitle("Create Note");
-        } else {
-            setTitle("Edit Note");
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.edit_note__container, EditNoteFragment.newInstance(mNoteId))
-                .commit();
+        if (savedInstanceState == null) {
+            String noteId = getIntent().getStringExtra(EXTRA_NOTE_ID);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.edit_note__container, EditNoteFragment.newInstance(noteId))
+                    .commit();
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's home button
+            case android.R.id.home:
+                finish();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
     public void noteSaved(String noteId) {
-        if (mNoteId == null) {
-            // A new note was created - create an intent to the note detail view
-            Intent intent = new Intent(this, NoteDetailActivity.class);
-            intent.putExtra(NoteDetailActivity.EXTRA_NOTE_ID, noteId);
-            startActivity(intent);
-        }
+        // Create an intent to the note detail view
+        Intent intent = new Intent(this, NoteDetailActivity.class);
+        intent.putExtra(NoteDetailActivity.EXTRA_NOTE_ID, noteId);
+        startActivity(intent);
 
         finish();
     }
