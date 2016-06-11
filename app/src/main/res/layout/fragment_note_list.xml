@@ -18,8 +18,7 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:context=".fragments.NoteListFragment"
-                tools:showIn="@layout/activity_main">
+                tools:context=".fragments.NoteListFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/fragment_note_list__recycler_view"

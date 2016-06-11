@@ -30,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.sreimler.quicknotes.R;
 import com.sreimler.quicknotes.adapters.NoteViewHolder;
 import com.sreimler.quicknotes.helpers.FirebaseUtil;
+import com.sreimler.quicknotes.helpers.SimpleDividerItemDecoration;
 import com.sreimler.quicknotes.models.Note;
 
 import butterknife.BindView;
@@ -66,6 +67,7 @@ public class NoteListFragment extends Fragment {
 
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(manager);
+        mRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(getContext()));
 
         mAdapter = new FirebaseRecyclerAdapter<Note, NoteViewHolder>(
                 Note.class,
