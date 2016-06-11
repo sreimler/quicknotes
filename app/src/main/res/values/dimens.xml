@@ -8,4 +8,7 @@
     <dimen name="card_horizontal_margin">16dp</dimen>
     <dimen name="card_vertical_margin">24dp</dimen>
     <dimen name="card_padding">8dp</dimen>
+    <dimen name="etxt_vertical_padding">20dp</dimen>
+    <dimen name="text_size_note_title">24sp</dimen>
+    <dimen name="text_size_note_description">16sp</dimen>
 </resources>
