@@ -39,3 +39,6 @@ captures/
 
 # Firebase configuration
 google-services.json
+
+# Release configuration
+keystore.properties
