@@ -37,5 +37,8 @@ captures/
 
 .DS_Store
 
-# Log files
-*.log
+# Firebase configuration
+google-services.json
+
+# Release configuration
+keystore.properties

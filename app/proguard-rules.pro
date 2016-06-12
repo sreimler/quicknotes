@@ -15,3 +15,19 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-keep public class com.google.android.gms.* { public *; }
+-dontwarn com.google.android.gms.**
+
+# Firebase configuration
+-keepattributes Signature
+
+# Model classes
+-keepclassmembers class com.sreimler.quicknotes.models.** {
+  *;
+}
+
+# Viewholder classes
+-keep class com.sreimler.quicknotes.adapters.** { *; }
+
+-keepattributes Signature
+-keepattributes *Annotation*
